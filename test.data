@@ -1,0 +1,8 @@
+http://test.com?param4=var4
+http://test.com?param3=var3
+http://abc.com?abcpar=123&asdasd=asdas
+http://abc.com?abcpar123=123
+http://test.com/path1?param3=var3
+http://test.com/path1?param1=var2&param2=var2
+http://bc.com
+http://test.com?param1=var2&param2=var2
