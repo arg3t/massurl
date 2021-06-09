@@ -11,15 +11,21 @@
 #ifndef tree_h
 #define tree_h
 
-typedef struct {
+typedef struct tnode {
     char *path;
+    unsigned int red : 1;
     LinkedList *params;
+    int nparams;
+    struct tnode *parent;
     struct tnode *left;
     struct tnode *right;
 } TreeNode;
 
-TreeNode *addtree(TreeNode *root, URL *url);
+TreeNode *addtree(TreeNode *parent, TreeNode *node);
+void rotatetreeright(TreeNode *node);
+void rotatetreeleft(TreeNode *node);
+void balancetree(TreeNode *root, TreeNode *node);
 TreeNode *treealloc(void);
-void printtree(TreeNode *root, FILE *out);
+void printtree(TreeNode *root, FILE *out, char *payload, int minparams);
 
 #endif /* Symbol’s value as variable is void: \. */

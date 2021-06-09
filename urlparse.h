@@ -14,6 +14,7 @@ typedef struct{
     unsigned int https : 1;
     char *base;
     LinkedList *params;
+    int nparams;
 } URL;
 
 URL *parseurl(char *urlstr);

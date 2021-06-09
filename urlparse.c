@@ -14,19 +14,21 @@
 URL *parseurl(char *url) {
   URL *urlp = urlalloc();
   urlp->params = NULL;
+  urlp->nparams = 0;
   short stage = 0; /* var to keep track of where we are in url */
   int counter = 0;
 
   while (*url != '\0' && *url != '\n') {
     switch (*url++) {
     case ':':
+      counter++;
       if (stage == 0) {
         urlp->https = *(url - 2) == 's';
         if (*(url + 1) == '\0' || *url == '\0' || *url == '\n') /* weird stuff would happen with strings like "http:" */
           return NULL;
         url += 2; /* Skip the // after the :*/
         stage = 1;
-        counter+=4;
+        counter+=3;
       }
       break;
 
@@ -53,6 +55,7 @@ URL *parseurl(char *url) {
           urlp->params->data = foo;
         }else
           urlp->params = linkedlistadd(urlp->params, foo);
+        urlp->nparams++;
         while(*url != '&' && *url != '\0' && *url != '\n')
           url++;
         url++;

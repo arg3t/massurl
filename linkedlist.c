@@ -36,10 +36,10 @@ LinkedList *linkedlistadd(LinkedList *p, char *data){
     return p;
 }
 
-void linkedlistprint(LinkedList *p, FILE *out){
+void linkedlistprint(LinkedList *p, FILE *out, char* payload){
     if(p != NULL){
-        (p->data == NULL) ? fprintf(out, "NULL") : fprintf(out, "%s", p->data);
+        (p->data == NULL) ? fprintf(out, "NULL=NULL") : fprintf(out, "%s=%s", p->data, payload);
         (p->next == NULL) ? : fprintf(out, "%c",'&');
-        linkedlistprint(p->next, out);
+        linkedlistprint(p->next, out, payload);
     }
 }

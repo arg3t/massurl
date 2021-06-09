@@ -18,5 +18,5 @@ typedef struct {
 LinkedList *linkedlistalloc(void);
 int linkedlistfind(LinkedList *p, char *str);
 LinkedList*linkedlistadd(LinkedList *p, char *data);
-void linkedlistprint(LinkedList *p, FILE *out);
+void linkedlistprint(LinkedList *p, FILE *out, char *payload);
 #endif /* Symbol’s value as variable is void: \. */
