@@ -124,7 +124,8 @@ void printtree(TreeNode *root, FILE *out, char *payload, int minparams) {
   if (root != NULL) {
     printtree(root->left, out, payload, minparams);
     if(root->nparams >= minparams){
-      fprintf(out, "%s?", root->path);
+      fprintf(out, "%s", root->path);
+      (!root->nparams) ? : fprintf(out, "%c",'?');
       linkedlistprint(root->params, out, payload);
       fprintf(out, "%c", '\n');
     }

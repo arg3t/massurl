@@ -10,6 +10,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#define RANDLEN 6
+
 
 LinkedList *linkedlistalloc(void){
     return (LinkedList *) malloc(sizeof(LinkedList));
@@ -36,10 +38,30 @@ LinkedList *linkedlistadd(LinkedList *p, char *data){
     return p;
 }
 
+
+char rstr[RANDLEN+1];
+
+char *randstr(){
+    char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    int n = RANDLEN;
+    while((--n) > -1){
+        size_t index = (double) rand()/RAND_MAX * (sizeof charset - 1);
+        rstr[n] = charset[index];
+    }
+    return rstr;
+}
+
 void linkedlistprint(LinkedList *p, FILE *out, char* payload){
+    int random = 0;
+    if(!payload){
+        random = 1;
+        payload = randstr();
+    }
     if(p != NULL){
         (p->data == NULL) ? fprintf(out, "NULL=NULL") : fprintf(out, "%s=%s", p->data, payload);
         (p->next == NULL) ? : fprintf(out, "%c",'&');
+        if(random)
+            payload = NULL;
         linkedlistprint(p->next, out, payload);
     }
 }

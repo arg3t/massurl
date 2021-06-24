@@ -16,11 +16,10 @@
 #define MAXPAYLOAD 10000
 
 static void usage(void) {
-  fputs("usage: massurl [-v] [-o outfile] [-p payloads] [-n minparamnum] input_file\n", stderr);
+fputs("\
+usage: massurl [-r] [-v] [-o outfile] [-p payloads] [-n minparamnum] input_file\n", stderr);
   exit(1);
 }
-
-enum outformat { PLAIN = 01 };
 
 TreeNode *root = NULL;
 
@@ -29,6 +28,7 @@ int main(int argc, char *argv[]) {
   FILE *fin = stdin, *fout = stdout, *payloads = NULL;
   char *param, urlstr[MAXURL], payload[MAXPAYLOAD];
   int minparamn, verbose = 0, npayloads = 1;
+  int randpayloads = 0;
   time_t begin = time(NULL);
   unsigned long lines, errors = 0;
 
@@ -36,7 +36,6 @@ int main(int argc, char *argv[]) {
     param = *++argv;
     if (param[0] == '-') {
       param++;
-      argc--;
       switch (*param) {
       case 'o':
         if ((fout = fopen(*++argv, "w")) == NULL) {
@@ -50,9 +49,13 @@ int main(int argc, char *argv[]) {
         break;
       case 'n':
         minparamn = atoi(*++argv);
+        argc--;
         break;
       case 'v':
         verbose = 1;
+        break;
+      case 'r':
+        randpayloads = 1;
         break;
       case 'h':
         usage();
@@ -78,6 +81,7 @@ int main(int argc, char *argv[]) {
       }
     }
   }
+  printf("v:%d r:%d\n", verbose, randpayloads);
 
   URL *url;
   while (fgets(urlstr, MAXURL, fin) != NULL) {
@@ -88,24 +92,22 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Malformed URL %s", urlstr);
       continue;
     }
-
-    if (url->nparams >= minparamn) {
-      TreeNode *newnode = treealloc();
-      newnode->path = url->base;
-      newnode->params = url->params;
-      newnode->parent = NULL;
-      newnode->left = newnode->right = NULL;
-      newnode->nparams = url->nparams;
-      newnode->red = 1; /* Always color new nodes red */
-      root = addtree(root, newnode);
-      balancetree(root, newnode);
-    }
+    TreeNode *newnode = treealloc();
+    newnode->path = url->base;
+    newnode->params = url->params;
+    newnode->parent = NULL;
+    newnode->left = newnode->right = NULL;
+    newnode->nparams = url->nparams;
+    newnode->red = 1; /* Always color new nodes red */
+    root = addtree(root, newnode);
+    balancetree(root, newnode);
   }
 
-  int printzeros = 0;
-  if (payloads == NULL)
-    printtree(root, fout, "%s", 0);
-  else {
+  if ( randpayloads )
+    printtree(root, fout, NULL, minparamn);
+  else if ( payloads == NULL )
+    printtree(root, fout, "%s", minparamn);
+  if ( payloads ) {
     while (fgets(payload, MAXPAYLOAD, payloads) != NULL) {
       npayloads++;
       for(int i=0; i<strlen(payload); i++){
@@ -114,8 +116,8 @@ int main(int argc, char *argv[]) {
               break;
           }
       }
-      printtree(root, fout, payload, printzeros);
-      printzeros = 1;
+      printtree(root, fout, payload, minparamn);
+      minparamn = (minparamn) ? minparamn : 1;
     }
   }
   time_t end = time(NULL);

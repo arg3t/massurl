@@ -59,9 +59,7 @@ URL *parseurl(char *url) {
         while(*url != '&' && *url != '\0' && *url != '\n')
           url++;
         url++;
-      } else {
-        return NULL;
-      }
+      } 
       break;
 
     default:
