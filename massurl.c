@@ -81,7 +81,6 @@ int main(int argc, char *argv[]) {
       }
     }
   }
-  printf("v:%d r:%d\n", verbose, randpayloads);
 
   URL *url;
   while (fgets(urlstr, MAXURL, fin) != NULL) {
